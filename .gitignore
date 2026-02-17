@@ -1,5 +1,5 @@
 #db.prop
-db.properties
+**/db.properties
 
 # Compiled class files
 *.class
