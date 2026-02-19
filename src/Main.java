@@ -6,7 +6,7 @@ public class Main {
         BookingDAO dao = new BookingDAO();
 
         try(Scanner sc = new Scanner(System.in)){
-        System.out.println("WHAT U WANT (1: print bus, 2: print passenger info, 3. add passenger");
+        System.out.println("WHAT U WANT (1: print bus, 2: print passenger info, 3. add passenger, 4. book ticket:");
         int choice = sc.nextInt();
         sc.nextLine();
         switch (choice) {
@@ -28,10 +28,25 @@ public class Main {
                     System.out.println("not added :(");
                 }
                 }
+            case 4 -> {
+                System.out.print("Enter passenger id: ");
+                int passengerId = sc.nextInt();
+                System.out.print("Enter bus id: ");
+                int busId = sc.nextInt();
+                sc.nextLine();
+                System.out.print("Enter date (dd-MM-yyyy): ");
+                String date = sc.nextLine().trim();
+                System.out.print("Enter seat num: ");
+                int seat_no = sc.nextInt();
+                System.out.print("Enter amount to pay: ");
+                double amount_paid = sc.nextDouble();
+                dao.bookTicket(passengerId, busId, date, seat_no, amount_paid);
+                
+            }
             default -> throw new AssertionError();
                 }
             }catch(SQLException e){
-        e.printStackTrace();
+                System.out.println(e);
         }
     }
 }

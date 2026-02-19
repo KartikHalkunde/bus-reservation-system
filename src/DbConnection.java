@@ -8,7 +8,6 @@ public class DbConnection{
     public static Connection getConnection() throws SQLException {
         Properties pp = new Properties();
         
-        // Use classpath resource instead of file path
         try(InputStream fis = DbConnection.class.getClassLoader()
                 .getResourceAsStream("db.properties")) {
             
