@@ -66,6 +66,35 @@ public class BookingDAO {
             }
         }
 
+
+    //check if seat avaliable
+    public boolean isSeatAvaliable(int busId, int seatNo, String dateString){
+        String query = "SELECT COUNT(*) FROM bookings WHERE seat_no = ? AND bus_id = ? AND travel_date = ?";
+        
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate localDate = LocalDate.parse(dateString, formatter);
+        java.sql.Date sqlDate = java.sql.Date.valueOf(localDate);
+        
+        try(Connection con = DbConnection.getConnection();
+            PreparedStatement ps = con.prepareStatement(query)){
+
+                ps.setInt(1, seatNo);
+                ps.setInt(2, busId);
+                ps.setDate(3, sqlDate);
+                ResultSet rs = ps.executeQuery();
+
+                if(rs.next()){
+                    int result = rs.getInt(1);
+                    return result == 0;
+                }else{
+                    return false;
+                }
+            }catch(SQLException e){
+                return false;
+            }
+    }
+
+
     //Get booked tickets count for the day
      public int getBookedCount(int busId, String dateString) throws SQLException {
         String query = "SELECT COUNT(*) FROM bookings WHERE bus_id = ? AND travel_date = ?";

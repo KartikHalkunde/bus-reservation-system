@@ -28,21 +28,30 @@ public class Main {
                     System.out.println("not added :(");
                 }
                 }
-            case 4 -> {
-                System.out.print("Enter passenger id: ");
-                int passengerId = sc.nextInt();
-                System.out.print("Enter bus id: ");
-                int busId = sc.nextInt();
-                sc.nextLine();
-                System.out.print("Enter date (dd-MM-yyyy): ");
-                String date = sc.nextLine().trim();
-                System.out.print("Enter seat num: ");
-                int seat_no = sc.nextInt();
-                System.out.print("Enter amount to pay: ");
-                double amount_paid = sc.nextDouble();
-                dao.bookTicket(passengerId, busId, date, seat_no, amount_paid);
-                
-            }
+                case 4 -> {
+                    System.out.print("Enter passenger id: ");
+                    int passengerId = sc.nextInt();
+                    System.out.print("Enter bus id: ");
+                    int busId = sc.nextInt();
+                    sc.nextLine();
+                    System.out.print("Enter date (dd-MM-yyyy): ");
+                    String date = sc.nextLine().trim();
+                    if(dao.getBusCapacity(busId)>dao.getBookedCount(busId, date)){
+                        while(true){
+                        System.out.print("Enter seat num: ");
+                        int seat_no = sc.nextInt();
+                        if(dao.isSeatAvaliable(busId, seat_no, date)){
+                        System.out.print("Enter amount to pay: ");
+                        double amount_paid = sc.nextDouble();
+                        dao.bookTicket(passengerId, busId, date, seat_no, amount_paid);
+                        break;
+                    }else{
+                        System.out.println("Seat not avaliable, try anoter seat!");
+                    }}
+                    }else{
+                        System.out.println("The bus is full for the date :(");
+                    }  
+                }
             default -> throw new AssertionError();
                 }
             }catch(SQLException e){
