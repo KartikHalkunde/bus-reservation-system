@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -10,7 +11,13 @@ public class Main {
         int choice = sc.nextInt();
         sc.nextLine();
         switch (choice) {
-            case 1 -> dao.displayBuses();
+            case 1 -> {
+                System.out.print("Enter bus source: ");
+                String source = sc.nextLine();
+                System.out.print("Enter bus destination: ");
+                String destination = sc.nextLine();
+                dao.displayBuses(source, destination);
+            }
             case 2 -> dao.displayPassengers();
             case 3 -> {
                 System.out.print("insert first name: ");
@@ -36,21 +43,66 @@ public class Main {
                     sc.nextLine();
                     System.out.print("Enter date (dd-MM-yyyy): ");
                     String date = sc.nextLine().trim();
-                    if(dao.getBusCapacity(busId)>dao.getBookedCount(busId, date)){
-                        while(true){
-                        System.out.print("Enter seat num: ");
-                        int seat_no = sc.nextInt();
-                        if(dao.isSeatAvaliable(busId, seat_no, date)){
-                        System.out.print("Enter amount to pay: ");
-                        double amount_paid = sc.nextDouble();
-                        dao.bookTicket(passengerId, busId, date, seat_no, amount_paid);
+                    int capacity = dao.getBusCapacity(busId);
+                    if(capacity == 0){ 
+                        System.out.println("Invalid bus id"); 
                         break;
-                    }else{
-                        System.out.println("Seat not avaliable, try anoter seat!");
-                    }}
-                    }else{
-                        System.out.println("The bus is full for the date :(");
-                    }  
+                    }
+                    List<Integer> bookedSeats = dao.getBookedSeats(busId, date);
+                    System.out.println("\n=======================================");
+                    System.out.println("        FRONT OF BUS (Driver)          ");
+                    System.out.println("=======================================");
+                    
+                    for(int i = 1; i <= capacity; i++){
+                        if(bookedSeats.contains(i)){
+                            System.out.print("[XX]");
+                        }else{
+                            System.out.printf("[%2d]", i);
+                        }
+                        if(i % 2 == 0 && i % 4 != 0){
+                            System.out.print("   ");
+                        }
+                        if(i % 4 == 0){
+                            System.out.println();
+                        }
+                    }
+
+                    System.out.println("Price of each seat: "+ dao.getSeatPrice(busId));
+
+                    System.out.println("\n=======================================");
+
+                    if(bookedSeats.size() >= capacity){
+                        System.out.println("The bus is completely full for this date :(");
+                        break;
+                    }
+                    
+                    System.out.print("Enter seat numbers separated by comma (e.g. 1, 2, 5): ");
+                    String seatInput = sc.nextLine();
+
+                    String[] selectedSeats = seatInput.split(",");
+                    boolean allValid = true;
+                    for(String s : selectedSeats){
+                        int seat = Integer.parseInt(s.trim());
+                        if(seat>capacity || seat <= 0){
+                            System.out.println("Error: Seat " + seat + " doesn't exist on this bus.");
+                            allValid = false;
+                            break;
+                        }
+                        if(!dao.isSeatAvaliable(busId, seat, date)){
+                            System.out.println("Error: Seat " + seat + " is already taken!");
+                            allValid = false;
+                            break;
+                            }
+                        }
+
+                        if(allValid){
+                            double fare = dao.getSeatPrice(busId);
+                            System.out.println("Total amount to be paid: "+ selectedSeats.length * fare);
+                            System.out.println("Processing booking for "+ selectedSeats.length+" seats..");
+                            dao.bookMultipleTickets(passengerId, busId, date, selectedSeats, fare);
+                        }else {
+                            System.out.println("Booking cancelled due to invalid seat selection. Please try again.");
+                        }                     
                 }
             default -> throw new AssertionError();
                 }

@@ -65,3 +65,6 @@ Thumbs.db
 # Credentials and config
 config.properties
 .env
+
+#Script files
+src/*.sh
