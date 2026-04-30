@@ -6,7 +6,7 @@
 
 # JAR files (exclude JDBC driver)
 *.jar
-lib/
+!lib/mysql-connector-j-*.jar
 
 # Package Files
 *.war
@@ -65,3 +65,9 @@ Thumbs.db
 # Credentials and config
 config.properties
 .env
+
+# Script files
+# (keep run.sh tracked)
+
+src/run.sh
+src/*.sh
