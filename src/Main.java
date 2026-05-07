@@ -9,7 +9,7 @@ public class Main {
 
     public static void main(String[] args) {
         try (Scanner sc = new Scanner(System.in)) {
-            System.out.println("Welcome to Bus Reservation System");
+		printWelcomeBanner();
             while (true) {
                 User user = authenticate(sc);
                 if (user == null) {
@@ -21,6 +21,18 @@ public class Main {
         } catch (SQLException e) {
             System.out.println("Database Error: " + e.getMessage());
         }
+    }
+
+    private static void printWelcomeBanner() {
+        System.out.println("========================================");
+        System.out.println("        BUS RESERVATION SYSTEM          ");
+        System.out.println("========================================");
+        System.out.println("      _______________________           ");
+        System.out.println("     | [_][_][_][_][_][_][_] |          ");
+        System.out.println("     |      बेस्ट  service      |          ");
+        System.out.println("     |__====___________====__|          ");
+        System.out.println("       (@)               (@)            ");
+        System.out.println("========================================");
     }
 
     private static User authenticate(Scanner sc) throws SQLException {
